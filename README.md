@@ -1,4 +1,4 @@
-JPMML-Hive
+JPMML-Hive [![Build Status](https://travis-ci.org/jpmml/jpmml-hive.png?branch=master)](https://travis-ci.org/jpmml/jpmml-hive)
 ==========
 
 PMML evaluator library for the Apache Hive data warehouse software (http://hive.apache.org).
