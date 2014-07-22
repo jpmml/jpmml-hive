@@ -1,0 +1,59 @@
+<?xml version="1.0" ?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>org.jpmml</groupId>
+		<artifactId>jpmml-hive</artifactId>
+		<version>1.0-SNAPSHOT</version>
+	</parent>
+
+	<groupId>org.jpmml</groupId>
+	<artifactId>pmml-hive</artifactId>
+
+	<name>JPMML Hive</name>
+	<description>JPMML Hive library</description>
+
+	<licenses>
+		<license>
+			<name>GNU Affero General Public License (AGPL) version 3.0</name>
+			<url>http://www.gnu.org/licenses/agpl-3.0.html</url>
+			<distribution>repo</distribution>
+		</license>
+	</licenses>
+
+	<dependencies>
+		<dependency>
+			<groupId>org.jpmml</groupId>
+			<artifactId>pmml-evaluator</artifactId>
+			<version>1.1.6</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.hive</groupId>
+			<artifactId>hive-exec</artifactId>
+		</dependency>
+	</dependencies>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-shade-plugin</artifactId>
+				<version>2.3</version>
+				<executions>
+					<execution>
+						<phase>package</phase>
+						<goals>
+							<goal>shade</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<createDependencyReducedPom>false</createDependencyReducedPom>
+					<finalName>${project.artifactId}-runtime-${project.version}</finalName>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+</project>
