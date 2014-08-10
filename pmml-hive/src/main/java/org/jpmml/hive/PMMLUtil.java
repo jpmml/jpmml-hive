@@ -18,16 +18,10 @@
  */
 package org.jpmml.hive;
 
-import java.io.FileNotFoundException;
-import java.io.InputStream;
 import java.util.List;
 import java.util.Map;
 
-import javax.xml.transform.Source;
-
 import com.google.common.cache.CacheBuilder;
-import com.google.common.cache.CacheLoader;
-import com.google.common.cache.LoadingCache;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import org.apache.hadoop.hive.ql.exec.UDFArgumentException;
@@ -45,16 +39,10 @@ import org.dmg.pmml.DataField;
 import org.dmg.pmml.DataType;
 import org.dmg.pmml.FieldName;
 import org.dmg.pmml.OutputField;
-import org.dmg.pmml.PMML;
 import org.jpmml.evaluator.Evaluator;
 import org.jpmml.evaluator.EvaluatorUtil;
 import org.jpmml.evaluator.FieldValue;
-import org.jpmml.evaluator.ModelEvaluator;
-import org.jpmml.evaluator.ModelEvaluatorFactory;
-import org.jpmml.manager.PMMLManager;
-import org.jpmml.model.ImportFilter;
-import org.jpmml.model.JAXBUtil;
-import org.xml.sax.InputSource;
+import org.jpmml.runtime.ModelEvaluatorCache;
 
 public class PMMLUtil {
 
@@ -405,42 +393,5 @@ public class PMMLUtil {
 		}
 	}
 
-	static
-	private PMML loadPMML(InputStream is) throws Exception {
-		Source source = ImportFilter.apply(new InputSource(is));
-
-		return JAXBUtil.unmarshalPMML(source);
-	}
-
-	static
-	private ModelEvaluator<?> loadEvaluator(Class<?> clazz) throws Exception {
-		String path = clazz.getSimpleName() + ".pmml";
-
-		InputStream is = clazz.getResourceAsStream(path);
-		if(is == null){
-			throw new FileNotFoundException(path);
-		}
-
-		PMML pmml;
-
-		try {
-			pmml = loadPMML(is);
-		} finally {
-			is.close();
-		}
-
-		PMMLManager pmmlManager = new PMMLManager(pmml);
-
-		return (ModelEvaluator<?>)pmmlManager.getModelManager(null, ModelEvaluatorFactory.getInstance());
-	}
-
-	private static final LoadingCache<Class<?>, Evaluator> evaluatorCache = CacheBuilder.newBuilder()
-		.weakKeys()
-		.build(new CacheLoader<Class<?>, Evaluator>(){
-
-			@Override
-			public Evaluator load(Class<?> clazz) throws Exception {
-				return loadEvaluator(clazz);
-			}
-		});
+	private static final ModelEvaluatorCache evaluatorCache = new ModelEvaluatorCache(CacheBuilder.newBuilder());
 }

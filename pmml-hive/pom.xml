@@ -25,8 +25,8 @@
 	<dependencies>
 		<dependency>
 			<groupId>org.jpmml</groupId>
-			<artifactId>pmml-evaluator</artifactId>
-			<version>1.1.6</version>
+			<artifactId>pmml-runtime</artifactId>
+			<version>1.1.8</version>
 		</dependency>
 
 		<dependency>
