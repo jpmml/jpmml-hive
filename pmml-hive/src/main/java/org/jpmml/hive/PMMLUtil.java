@@ -18,6 +18,7 @@
  */
 package org.jpmml.hive;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -185,8 +186,8 @@ public class PMMLUtil {
 	}
 
 	static
-	public String getDisplayString(Class<? extends GenericUDF> clazz, String[] strings){
-		return clazz.getSimpleName(); // XXX
+	public String getDisplayString(String name, String[] strings){
+		return name + "(" + Arrays.toString(strings) + ")";
 	}
 
 	/**

@@ -25,6 +25,6 @@ public class DecisionTreeIris extends GenericUDF {
 
 	@Override
 	public String getDisplayString(String[] parameterStrings){
-		return PMMLUtil.getDisplayString(DecisionTreeIris.class, parameterStrings);
+		return PMMLUtil.getDisplayString(getUdfName(), parameterStrings);
 	}
 }
