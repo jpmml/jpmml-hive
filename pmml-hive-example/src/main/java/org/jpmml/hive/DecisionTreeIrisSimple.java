@@ -18,6 +18,7 @@
  */
 package org.jpmml.hive;
 
+import org.apache.hadoop.hive.ql.exec.Description;
 import org.apache.hadoop.hive.ql.exec.UDFArgumentException;
 import org.apache.hadoop.hive.ql.metadata.HiveException;
 import org.apache.hadoop.hive.ql.udf.UDFType;
@@ -25,6 +26,10 @@ import org.apache.hadoop.hive.serde2.objectinspector.ObjectInspector;
 
 @UDFType (
 	deterministic = true
+)
+@Description (
+	name = "iris_simple",
+	value = "_FUNC_(Sepal_Length, Sepal_Width, Petal_Length, Petal_Width): Species"
 )
 public class DecisionTreeIrisSimple extends DecisionTreeIris {
 
