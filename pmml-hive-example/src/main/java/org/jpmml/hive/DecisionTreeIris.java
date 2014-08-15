@@ -18,10 +18,36 @@
  */
 package org.jpmml.hive;
 
+import org.apache.hadoop.hive.ql.exec.Description;
+import org.apache.hadoop.hive.ql.exec.UDFArgumentException;
+import org.apache.hadoop.hive.ql.metadata.HiveException;
+import org.apache.hadoop.hive.ql.udf.UDFType;
 import org.apache.hadoop.hive.ql.udf.generic.GenericUDF;
+import org.apache.hadoop.hive.serde2.objectinspector.ObjectInspector;
 
-abstract
+@UDFType (
+	deterministic = true
+)
+@Description (
+	name = "DecisionTreeIris",
+	value = "_FUNC_(Sepal_Length, Sepal_Width, Petal_Length, Petal_Width): <Species, Predicted_Species, Probability_setosa, Probability_versicolor, Probability_virginica>"
+)
 public class DecisionTreeIris extends GenericUDF {
+
+	private ObjectInspector[] inspectors = null;
+
+
+	@Override
+	public ObjectInspector initialize(ObjectInspector[] parameterObjectInspectors) throws UDFArgumentException {
+		this.inspectors = PMMLUtil.initializeArguments(DecisionTreeIris.class, parameterObjectInspectors);
+
+		return PMMLUtil.initializeComplexResult(DecisionTreeIris.class);
+	}
+
+	@Override
+	public Object evaluate(DeferredObject[] parameterObjects) throws HiveException {
+		return PMMLUtil.evaluateComplex(DecisionTreeIris.class, this.inspectors, parameterObjects);
+	}
 
 	@Override
 	public String getDisplayString(String[] parameterStrings){

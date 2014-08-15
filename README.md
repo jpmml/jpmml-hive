@@ -19,11 +19,11 @@ The main responsibility of a model launcher class is to formalize the "public in
 
 * `#initialize(ObjectInspector[])`. The initialization of argument types is handled by the method `PMMLUtil#initializeArguments(Class, ObjectInspector[])`. The initialization of the result type is handled either by the method `PMMLUtil#initializeSimpleResult(Class)` or `PMMLUtil#handleComplexResult(Class)`.
 * `#evaluate(GenericUDF.DeferredObject[])`. Handled either by the method `PMMLUtil#evaluateSimple(Class, ObjectInspector[], GenericUDF.DeferredObject[])` or `PMMLUtil#evaluateComplex(Class, ObjectInspector[], GenericUDF.DeferredObject[])`.
-* `#getDisplayString(String[])`. Handled by the method `PMMLUtil#getDisplayString(Class, String[])`.
+* `#getDisplayString(String[])`. Handled by the method `PMMLUtil#getDisplayString(String, String[])`.
 
 All in all, a typical model launcher class can be implemented in 15 to 20 lines of boilerplate-esque Java source code.
 
-The example model JAR file contains a DecisionTree model for the "iris" dataset. This model is exposed in two ways. First, the model launcher class `org.jpmml.hive.DecisionTreeIrisSimple` defines a custom function that returns the PMML target field ("Species") as a string. Second, the model launcher class `org.jpmml.hive.DecisionTreeIrisComplex` defines a custom function that returns the PMML target field ("Species") together with four output fields ("Predicted_Species", "Probability_setosa", "Probability_versicolor", "Probability_virginica") as a `struct`.
+The example model JAR file contains a DecisionTree model for the "iris" dataset. This model is exposed in two ways. First, the model launcher class `org.jpmml.hive.DecisionTreeIris` defines a custom function that returns the PMML target field ("Species") together with four output fields ("Predicted_Species", "Probability_setosa", "Probability_versicolor", "Probability_virginica") as a `struct`. Second, the model launcher class `org.jpmml.hive.DecisionTreeIris_Species` defines a custom function that returns the PMML target field ("Species") as a string.
 
 # Installation #
 
@@ -58,20 +58,20 @@ ADD JAR /tmp/pmml-hive-example-1.0-SNAPSHOT.jar;
 
 Declare custom functions based on UDF implementation classes:
 ```
-CREATE TEMPORARY FUNCTION iris_simple AS 'org.jpmml.hive.DecisionTreeIrisSimple';
-CREATE TEMPORARY FUNCTION iris_complex AS 'org.jpmml.hive.DecisionTreeIrisComplex';
+CREATE TEMPORARY FUNCTION DecisionTreeIris AS 'org.jpmml.hive.DecisionTreeIris';
+CREATE TEMPORARY FUNCTION DecisionTreeIris_Species AS 'org.jpmml.hive.DecisionTreeIris_Species';
 ```
 
 ##### Usage
 
 Execute a custom function using a list of scalar arguments:
 ```
-SELECT iris_simple(5.1, 3.5, 1.4, 0.2);
+SELECT DecisionTreeIris(5.1, 3.5, 1.4, 0.2);
 ```
 
 Execute a custom function using a `struct` argument:
 ```
-SELECT iris_simple(named_struct('Sepal_Length', 5.1, 'Sepal_Width', 3.5, 'Petal_Length', 1.4, 'Petal_Width', 0.2));
+SELECT DecisionTreeIris(named_struct('Sepal_Length', 5.1, 'Sepal_Width', 3.5, 'Petal_Length', 1.4, 'Petal_Width', 0.2));
 ```
 
 # License #

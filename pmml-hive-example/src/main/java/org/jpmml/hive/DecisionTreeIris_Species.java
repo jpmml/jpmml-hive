@@ -22,16 +22,17 @@ import org.apache.hadoop.hive.ql.exec.Description;
 import org.apache.hadoop.hive.ql.exec.UDFArgumentException;
 import org.apache.hadoop.hive.ql.metadata.HiveException;
 import org.apache.hadoop.hive.ql.udf.UDFType;
+import org.apache.hadoop.hive.ql.udf.generic.GenericUDF;
 import org.apache.hadoop.hive.serde2.objectinspector.ObjectInspector;
 
 @UDFType (
 	deterministic = true
 )
 @Description (
-	name = "iris_complex",
-	value = "_FUNC_(Sepal_Length, Sepal_Width, Petal_Length, Petal_Width): <Species, Predicted_Species, Probability_setosa, Probability_versicolor, Probability_virginica>"
+	name = "DecisionTreeIris_Species",
+	value = "_FUNC_(Sepal_Length, Sepal_Width, Petal_Length, Petal_Width): Species"
 )
-public class DecisionTreeIrisComplex extends DecisionTreeIris {
+public class DecisionTreeIris_Species extends GenericUDF {
 
 	private ObjectInspector[] inspectors = null;
 
@@ -40,11 +41,16 @@ public class DecisionTreeIrisComplex extends DecisionTreeIris {
 	public ObjectInspector initialize(ObjectInspector[] parameterObjectInspectors) throws UDFArgumentException {
 		this.inspectors = PMMLUtil.initializeArguments(DecisionTreeIris.class, parameterObjectInspectors);
 
-		return PMMLUtil.initializeComplexResult(DecisionTreeIris.class);
+		return PMMLUtil.initializeSimpleResult(DecisionTreeIris.class);
 	}
 
 	@Override
 	public Object evaluate(DeferredObject[] parameterObjects) throws HiveException {
-		return PMMLUtil.evaluateComplex(DecisionTreeIris.class, this.inspectors, parameterObjects);
+		return PMMLUtil.evaluateSimple(DecisionTreeIris.class, this.inspectors, parameterObjects);
+	}
+
+	@Override
+	public String getDisplayString(String[] parameterStrings){
+		return PMMLUtil.getDisplayString(getUdfName(), parameterStrings);
 	}
 }
