@@ -43,6 +43,8 @@ import org.dmg.pmml.OutputField;
 import org.jpmml.evaluator.Evaluator;
 import org.jpmml.evaluator.EvaluatorUtil;
 import org.jpmml.evaluator.FieldValue;
+import org.jpmml.evaluator.ModelEvaluator;
+import org.jpmml.evaluator.OutputUtil;
 import org.jpmml.runtime.ModelEvaluatorCache;
 
 public class PMMLUtil {
@@ -170,16 +172,20 @@ public class PMMLUtil {
 		for(FieldName targetField : targetFields){
 			DataField field = evaluator.getDataField(targetField);
 
+			DataType dataType = field.getDataType();
+
 			fieldNames.add(targetField.getValue());
-			fieldInspectors.add(toObjectInspector(field.getDataType()));
+			fieldInspectors.add(toObjectInspector(dataType));
 		}
 
 		List<FieldName> outputFields = evaluator.getOutputFields();
 		for(FieldName outputField : outputFields){
 			OutputField field = evaluator.getOutputField(outputField);
 
+			DataType dataType = OutputUtil.getDataType(field, (ModelEvaluator<?>)evaluator);
+
 			fieldNames.add(outputField.getValue());
-			fieldInspectors.add(toObjectInspector(field.getDataType()));
+			fieldInspectors.add(toObjectInspector(dataType));
 		}
 
 		return ObjectInspectorFactory.getStandardStructObjectInspector(fieldNames, fieldInspectors);
